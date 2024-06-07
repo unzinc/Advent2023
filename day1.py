@@ -3,7 +3,6 @@ Created on Thu Jun  6 14:34:42 2024
 
 @author: KDM
 """
-import re
 #Create some blank arrays
 nums=[]
 nums_cut=[]
