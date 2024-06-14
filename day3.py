@@ -12,10 +12,11 @@ Created on Fri Jun  7 16:44:26 2024
 
 #Load in all lines of input and set each line as an entry to an array
 input_text_array=[]
+input_check=[]
 with open ('day3_input.txt', 'r') as file: 
     for line in file:
         input_text_array.append(list(line.strip()))      #Create a matrix of each character - list() does this - strip() removes \n
-        
+        input_check.append(list(line.strip()))
 soln_matrix=[]
 
 #Create a Solutions Matrix to copy numbers adjacent to a symbol to
@@ -37,16 +38,29 @@ def cross_check(xcoord, ycoord):
         if input_text_array[ycoord+n][xcoord] in nums:
             soln_matrix[ycoord+n][xcoord]=input_text_array[ycoord+n][xcoord]
             input_text_array[ycoord+n][xcoord]='.'
-        if input_text_array[ycoord][xcoord+n] in nums:
-            soln_matrix[ycoord][xcoord+n]=input_text_array[ycoord][xcoord+n]
-            input_text_array[ycoord][xcoord+n]='.'
+        while True:    
+            if input_text_array[ycoord][xcoord+n] in nums:
+                soln_matrix[ycoord][xcoord+n]=input_text_array[ycoord][xcoord+n]
+                input_text_array[ycoord][xcoord+n]='.'
+                n+=n
+            else:
+                break
 
 def diag_check(xcoord, ycoord):
     for diag in [[-1,-1],[-1,1],[1,-1],[1,1]]:
+        y_skid=diag[0]
+        x_skid=diag[1]
         while True:
-            if input_text_array[ycoord+diag[0]][xcoord+diag[1]] in nums:   ### Adjust here
-                
-                
+            ycoordskid=ycoord+y_skid 
+            xcoordskid=xcoord+x_skid
+
+            if ycoordskid < 0 or ycoordskid > len(input_text_array)-1 or xcoordskid < 0 or xcoordskid > len(input_text_array[0])-1:
+                # print(ycoordskid,xcoordskid)
+                break
+            elif input_text_array[ycoord+y_skid][xcoord+x_skid] in nums:
+                soln_matrix[ycoord+y_skid][xcoord+x_skid]=input_text_array[ycoord+y_skid][xcoord+x_skid]
+                input_text_array[ycoord+y_skid][xcoord+x_skid]='.'
+                x_skid+=diag[1]
             else:
                 break
 y=0
@@ -56,24 +70,16 @@ for row in input_text_array:
     for char in row:
         if char not in numsanddeci:
             cross_check(x, y)
+            diag_check(x, y)
         x+=1
     y+=1
 
-# linecount=0
-# charcount=0
-# for line in input_text_array:
-#     for char in line:
-#         if char in nums:
-            
-            
-            
-          
-    #         charcount+=1
-    # linecount+=1
-
-# val=0
-# line_char_count=0
-# while val < len(text) :
-#     if text[val] not in deci:
-#         print(text[val])
-#     val+=1    
+soln_nums=[]
+ans=0
+delim=','
+for row in soln_matrix:
+    # soln_nums.append(''.join(row).split('.'))
+    soln_nums+=''.join(row).split('.')
+for element in soln_nums:
+    if element.isdigit():
+        ans+=int(element)    
