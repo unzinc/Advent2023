@@ -33,8 +33,10 @@ deci=['.']
 numsanddeci=nums+deci
 
 #Function to check the linear adjacent cells
+#Idea is to move the part numbers to a solution matrix and delete them from the input to avoid duplicate part numbers
 def cross_check(xcoord, ycoord):
     for n in [-1, 1]:
+        
         if input_text_array[ycoord+n][xcoord] in nums:
             soln_matrix[ycoord+n][xcoord]=input_text_array[ycoord+n][xcoord]
             input_text_array[ycoord+n][xcoord]='.'
@@ -42,10 +44,13 @@ def cross_check(xcoord, ycoord):
             if input_text_array[ycoord][xcoord+n] in nums:
                 soln_matrix[ycoord][xcoord+n]=input_text_array[ycoord][xcoord+n]
                 input_text_array[ycoord][xcoord+n]='.'
-                n+=n
+                if n < 0:
+                    n+=-1
+                else:
+                    n+=1
             else:
                 break
-
+#Function to check the diagonal boxes
 def diag_check(xcoord, ycoord):
     for diag in [[-1,-1],[-1,1],[1,-1],[1,1]]:
         y_skid=diag[0]
@@ -53,9 +58,7 @@ def diag_check(xcoord, ycoord):
         while True:
             ycoordskid=ycoord+y_skid 
             xcoordskid=xcoord+x_skid
-
             if ycoordskid < 0 or ycoordskid > len(input_text_array)-1 or xcoordskid < 0 or xcoordskid > len(input_text_array[0])-1:
-                # print(ycoordskid,xcoordskid)
                 break
             elif input_text_array[ycoord+y_skid][xcoord+x_skid] in nums:
                 soln_matrix[ycoord+y_skid][xcoord+x_skid]=input_text_array[ycoord+y_skid][xcoord+x_skid]
@@ -64,7 +67,7 @@ def diag_check(xcoord, ycoord):
             else:
                 break
 y=0
-
+#Iterate through the text to find symbols then, when found, search around for numbers using the functions. 
 for row in input_text_array:
     x=0
     for char in row:
@@ -74,12 +77,14 @@ for row in input_text_array:
         x+=1
     y+=1
 
+#Join the values from the solution matrix then add them up!
 soln_nums=[]
 ans=0
 delim=','
 for row in soln_matrix:
-    # soln_nums.append(''.join(row).split('.'))
     soln_nums+=''.join(row).split('.')
 for element in soln_nums:
     if element.isdigit():
-        ans+=int(element)    
+        ans+=int(element)
+        
+print("Part 1 solution is:", ans)
